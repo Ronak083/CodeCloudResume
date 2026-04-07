@@ -1,5 +1,5 @@
 module "my_resume_site" {
-  source = "../terraform-modules/s3-with-cf"
+  source = "../../terraform-modules/s3-with-cf"
   bucket_name         = "my-codecloudresume"
   domain_name         = "ronakgupta.in"
   hosted_zone_name    = "ronakgupta.in"
@@ -9,20 +9,20 @@ module "my_resume_site" {
 resource "aws_s3_object" "index" {
   bucket = module.my_resume_site.bucket_id
   key    = "index.html"
-  source = "${path.module}/../CloudCV-HTML/index-space.html"
-  etag   = filemd5("${path.module}/../CloudCV-HTML/index-space.html")
+  source = "../contents/index-space.html"
+  etag   = filemd5("../contents/index-space.html")
 
   content_type = "text/html"
 }
 
 ## Upload all HTML resume theme variants to S3
 resource "aws_s3_object" "remaining_html_files" {
-  for_each = fileset("${path.module}/../CloudCV-HTML", "*.html")
+  for_each = fileset("../contents", "*.html")
 
   bucket       = module.my_resume_site.bucket_id
   key          = each.value
-  source       = "${path.module}/../CloudCV-HTML/${each.value}"
-  etag         = filemd5("${path.module}/../CloudCV-HTML/${each.value}")
+  source       = "../contents/${each.value}"
+  etag         = filemd5("../contents/${each.value}")
 
   content_type = "text/html"
 }
