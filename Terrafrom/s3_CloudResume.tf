@@ -7,7 +7,7 @@ module "my_resume_site" {
 }
 
 resource "aws_s3_object" "index" {
-  bucket = aws_s3_bucket.my_resume_site.bucket_id
+  bucket = module.my_resume_site.bucket_id
   key    = "index.html"
   source = "${path.module}/../CloudCV-HTML/index-space.html"
 
@@ -18,7 +18,7 @@ resource "aws_s3_object" "remaining_html_files" {
   # This uses fileset() to list all files ending with .html in that folder
   for_each     = fileset("${path.module}/../CloudCV-HTML", "*.html")
   
-  bucket       = aws_s3_bucket.my_resume_site.bucket_id
+  bucket       = module.my_resume_site.bucket_id
   key          = each.value
   source       = "${path.module}/../CloudCV-HTML/${each.value}"
 
