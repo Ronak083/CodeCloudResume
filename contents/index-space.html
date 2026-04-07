@@ -850,43 +850,48 @@
     }
 
     /* === Visitor Counter === */
-    .visitor-counter {
-      padding: 48px 0;
-      text-align: center
+    .hero-visitor {
+      margin-top: 36px;
+      display: flex;
+      justify-content: center;
+      z-index: 2;
+      position: relative;
     }
 
     .visitor-card {
       display: inline-flex;
       align-items: center;
-      gap: 20px;
-      padding: 20px 36px;
-      background: var(--bg-card);
+      gap: 12px;
+      padding: 10px 20px;
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 30px;
       box-shadow: var(--shadow);
       transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition)
     }
 
     .visitor-card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-2px);
       box-shadow: var(--shadow-hover);
       border-color: var(--accent)
     }
 
     .visitor-icon {
-      width: 42px;
-      height: 42px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: var(--accent-glow);
-      border-radius: 10px;
+      border-radius: 50%;
       flex-shrink: 0
     }
 
     .visitor-icon svg {
-      width: 22px;
-      height: 22px;
+      width: 16px;
+      height: 16px;
       fill: none;
       stroke: var(--accent);
       stroke-width: 2;
@@ -895,57 +900,52 @@
     }
 
     .visitor-info {
-      text-align: left
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .visitor-count-wrapper {
       display: flex;
       align-items: center;
-      gap: 8px
+      gap: 6px
     }
 
     .visitor-number {
-      font-size: 1.9rem;
+      font-size: 1.1rem;
       font-weight: 800;
       color: var(--accent);
-      letter-spacing: 1px;
-      line-height: 1.2;
+      letter-spacing: 0.5px;
+      line-height: 1;
       font-variant-numeric: tabular-nums
     }
 
     .visitor-live-dot {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: #22c55e;
       animation: livePulse 2s ease-in-out infinite
     }
 
     @keyframes livePulse {
-
-      0%,
-      100% {
-        opacity: 1;
-        transform: scale(1)
-      }
-
-      50% {
-        opacity: .4;
-        transform: scale(.75)
-      }
+      0%, 100% { opacity: 1; transform: scale(1) }
+      50% { opacity: .4; transform: scale(.75) }
     }
 
     .visitor-label {
-      font-size: .82rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
-      font-weight: 500;
-      letter-spacing: .5px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-top: 2px
+      margin-top: 3px;
+      line-height: 1;
     }
 
     .visitor-number.loading {
-      font-size: 1.1rem;
+      font-size: 1rem;
       opacity: .5
     }
 
@@ -1131,6 +1131,26 @@
           </svg>
         </a>
       </div>
+      
+      <!-- Visitor Counter -->
+      <div class="hero-visitor animate-fade-up delay-4" id="visitorCounter">
+        <div class="visitor-card">
+          <div class="visitor-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
+          <div class="visitor-info">
+            <div class="visitor-count-wrapper">
+              <span class="visitor-number loading" id="visitorCount">···</span>
+              <span class="visitor-live-dot"></span>
+            </div>
+            <span class="visitor-label">Total Visitors</span>
+          </div>
+        </div>
+      </div>
+
     </div>
     <!-- Animated background particles -->
     <canvas id="heroCanvas"></canvas>
@@ -1448,25 +1468,6 @@
           </div>
           <button type="submit" class="btn btn-primary btn-full">Send Message</button>
         </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Visitor Counter ===== -->
-  <section class="visitor-counter" id="visitorCounter">
-    <div class="visitor-card">
-      <div class="visitor-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-      </div>
-      <div class="visitor-info">
-        <div class="visitor-count-wrapper">
-          <span class="visitor-number loading" id="visitorCount">···</span>
-          <span class="visitor-live-dot"></span>
-        </div>
-        <span class="visitor-label">Total Visitors</span>
       </div>
     </div>
   </section>
