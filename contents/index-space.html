@@ -849,6 +849,106 @@
       min-height: 120px
     }
 
+    /* === Visitor Counter === */
+    .visitor-counter {
+      padding: 48px 0;
+      text-align: center
+    }
+
+    .visitor-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 36px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition)
+    }
+
+    .visitor-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent)
+    }
+
+    .visitor-icon {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-glow);
+      border-radius: 10px;
+      flex-shrink: 0
+    }
+
+    .visitor-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round
+    }
+
+    .visitor-info {
+      text-align: left
+    }
+
+    .visitor-count-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .visitor-number {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 1px;
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums
+    }
+
+    .visitor-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: livePulse 2s ease-in-out infinite
+    }
+
+    @keyframes livePulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(.75)
+      }
+    }
+
+    .visitor-label {
+      font-size: .82rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-top: 2px
+    }
+
+    .visitor-number.loading {
+      font-size: 1.1rem;
+      opacity: .5
+    }
+
     /* === Footer === */
     .footer {
       text-align: center;
@@ -1352,6 +1452,25 @@
     </div>
   </section>
 
+  <!-- ===== Visitor Counter ===== -->
+  <section class="visitor-counter" id="visitorCounter">
+    <div class="visitor-card">
+      <div class="visitor-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      </div>
+      <div class="visitor-info">
+        <div class="visitor-count-wrapper">
+          <span class="visitor-number loading" id="visitorCount">···</span>
+          <span class="visitor-live-dot"></span>
+        </div>
+        <span class="visitor-label">Total Visitors</span>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== Footer ===== -->
   <footer class="footer">
     <p>&copy; 2026 Ronak Gupta. Built with care and too much coffee.</p>
@@ -1491,6 +1610,25 @@
         const animate = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); connectParticles(); animId = requestAnimationFrame(animate); };
         init(); animate();
         window.addEventListener('resize', () => { cancelAnimationFrame(animId); init(); animate(); });
+      }
+
+      /* ---- Visitor Counter (Lambda + API Gateway + DynamoDB) ---- */
+      const visitorCountEl = document.getElementById('visitorCount');
+      if (visitorCountEl) {
+        const VISITOR_API_URL = 'https://e1j5eitv4c.execute-api.us-east-1.amazonaws.com';
+
+        fetch(VISITOR_API_URL)
+          .then(res => res.json())
+          .then(data => {
+            const count = data.count || 0;
+            visitorCountEl.textContent = count.toLocaleString();
+            visitorCountEl.classList.remove('loading');
+          })
+          .catch(err => {
+            console.error('Visitor counter fetch failed:', err);
+            visitorCountEl.textContent = '—';
+            visitorCountEl.classList.remove('loading');
+          });
       }
     });
   </script>
