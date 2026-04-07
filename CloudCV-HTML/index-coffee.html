@@ -1573,11 +1573,13 @@
           </div>
           <div class="f-group">
             <label class="f-label" for="fsubj">Subject</label>
-            <input class="f-input" id="fsubj" name="subject" type="text" placeholder="DevOps role / Collaboration / Just saying hi" />
+            <input class="f-input" id="fsubj" name="subject" type="text"
+              placeholder="DevOps role / Collaboration / Just saying hi" />
           </div>
           <div class="f-group">
             <label class="f-label" for="fmsg">Message</label>
-            <textarea class="f-textarea" id="fmsg" name="message" placeholder="Tell me what you're building..." required></textarea>
+            <textarea class="f-textarea" id="fmsg" name="message" placeholder="Tell me what you're building..."
+              required></textarea>
           </div>
           <div class="f-submit">
             <button type="submit" class="pill pill-solid" id="submitBtn">Send message →</button>
@@ -1665,7 +1667,7 @@
             btn.style.background = '';
             btn.disabled = false;
             m.style.display = 'none';
-          }, 4000);
+          }, 5000);
         } else {
           throw new Error('Server error');
         }
@@ -1676,7 +1678,7 @@
         setTimeout(() => {
           btn.textContent = originalText;
           btn.style.background = '';
-        }, 4000);
+        }, 5000);
       }
     });
   </script>
