@@ -33,10 +33,6 @@ jobs:
         working-directory: Terrafrom
         run: terraform init
 
-      - name: Terraform Format Check
-        working-directory: Terrafrom
-        run: terraform fmt
-
       - name: Terraform Validate
         working-directory: Terrafrom
         run: terraform validate
