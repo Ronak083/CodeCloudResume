@@ -10,17 +10,19 @@ resource "aws_s3_object" "index" {
   bucket = module.my_resume_site.bucket_id
   key    = "index.html"
   source = "${path.module}/../CloudCV-HTML/index-space.html"
+  etag   = filemd5("${path.module}/../CloudCV-HTML/index-space.html")
 
   content_type = "text/html"
 }
 
 resource "aws_s3_object" "remaining_html_files" {
   # This uses fileset() to list all files ending with .html in that folder
-  for_each     = fileset("${path.module}/../CloudCV-HTML", "*.html")
-  
+  for_each = fileset("${path.module}/../CloudCV-HTML", "*.html")
+
   bucket       = module.my_resume_site.bucket_id
   key          = each.value
   source       = "${path.module}/../CloudCV-HTML/${each.value}"
+  etag         = filemd5("${path.module}/../CloudCV-HTML/${each.value}")
 
   content_type = "text/html"
 }
