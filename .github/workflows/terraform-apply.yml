@@ -25,7 +25,7 @@ jobs:
 
       - name: Clone Terraform Modules Repo
         run: |
-          git clone https://github.com/Ronak083/terraform-modules.git Terrafrom/terraform-modules
+          git clone https://github.com/Ronak083/terraform-modules.git
 
       - name: Terraform Init
         working-directory: Terrafrom
