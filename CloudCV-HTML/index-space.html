@@ -1336,13 +1336,13 @@
         </div>
         <form class="contact-form" id="contactForm">
           <div class="form-group">
-            <input type="text" id="formName" placeholder="Your Name" required autocomplete="name" />
+            <input type="text" id="formName" name="name" placeholder="Your Name" required autocomplete="name" />
           </div>
           <div class="form-group">
-            <input type="email" id="formEmail" placeholder="Your Email" required autocomplete="email" />
+            <input type="email" id="formEmail" name="email" placeholder="Your Email" required autocomplete="email" />
           </div>
           <div class="form-group">
-            <textarea id="formMessage" rows="5" placeholder="Your Message" required></textarea>
+            <textarea id="formMessage" name="message" rows="5" placeholder="Your Message" required></textarea>
           </div>
           <button type="submit" class="btn btn-primary btn-full">Send Message</button>
         </form>
@@ -1419,15 +1419,48 @@
       window.addEventListener('scroll', onScroll);
       onScroll();
 
-      /* ---- Contact Form ---- */
+      /* ---- Contact Form (Formspree) ---- */
       const form = document.getElementById('contactForm');
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = form.querySelector('button[type="submit"]');
         const originalText = btn.textContent;
-        btn.textContent = 'Message Sent!'; btn.style.background = '#22c55e'; btn.disabled = true;
-        form.reset();
-        setTimeout(() => { btn.textContent = originalText; btn.style.background = ''; btn.disabled = false; }, 3000);
+
+        // Loading state
+        btn.textContent = 'Sending…';
+        btn.style.background = '';
+        btn.disabled = true;
+
+        try {
+          const response = await fetch('https://formspree.io/f/maqlvbwg', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: new FormData(form)
+          });
+
+          if (response.ok) {
+            // Success
+            btn.textContent = '✓ Message Sent!';
+            btn.style.background = '#22c55e';
+            form.reset();
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.style.background = '';
+              btn.disabled = false;
+            }, 4000);
+          } else {
+            throw new Error('Server error');
+          }
+        } catch (err) {
+          // Error state
+          btn.textContent = '✗ Failed — Try Again';
+          btn.style.background = '#ef4444';
+          btn.disabled = false;
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+          }, 4000);
+        }
       });
 
       /* ---- Hero Canvas Particles ---- */
