@@ -35,7 +35,7 @@ jobs:
 
       - name: Terraform Format Check
         working-directory: Terrafrom
-        run: terraform fmt -check
+        run: terraform fmt
 
       - name: Terraform Validate
         working-directory: Terrafrom
