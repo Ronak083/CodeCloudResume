@@ -1615,7 +1615,7 @@
       /* ---- Visitor Counter (Lambda + API Gateway + DynamoDB) ---- */
       const visitorCountEl = document.getElementById('visitorCount');
       if (visitorCountEl) {
-        const VISITOR_API_URL = 'https://e1j5eitv4c.execute-api.us-east-1.amazonaws.com';
+        const VISITOR_API_URL = 'https://e1j5eitv4c.execute-api.us-east-1.amazonaws.com/visit';
 
         fetch(VISITOR_API_URL)
           .then(res => res.json())
