@@ -1,5 +1,5 @@
 module "my_resume_site" {
-  source = "../../terraform-modules/s3-with-cf"
+  source = "./terraform-modules/s3-with-cf"
   bucket_name         = "my-codecloudresume"
   domain_name         = "ronakgupta.in"
   hosted_zone_name    = "ronakgupta.in"
