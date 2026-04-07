@@ -1560,24 +1560,26 @@
           <p>Open to DevOps / SRE / Platform Engineering roles, interesting infrastructure problems, or just a good
             conversation about Kubernetes. I reply within 24 hours.</p>
         </div>
-        <form class="r d3" id="contactForm" onsubmit="handleSubmit(event)">
+        <form class="r d3" id="contactForm">
           <div class="f-row">
             <div class="f-group">
               <label class="f-label" for="fname">Name</label>
-              <input class="f-input" id="fname" type="text" placeholder="Your name" required />
+              <input class="f-input" id="fname" name="name" type="text" placeholder="Your name" required />
             </div>
             <div class="f-group">
               <label class="f-label" for="femail">Email</label>
-              <input class="f-input" id="femail" type="email" placeholder="you@company.com" required />
+              <input class="f-input" id="femail" name="email" type="email" placeholder="you@company.com" required />
             </div>
           </div>
           <div class="f-group">
             <label class="f-label" for="fsubj">Subject</label>
-            <input class="f-input" id="fsubj" type="text" placeholder="DevOps role / Collaboration / Just saying hi" />
+            <input class="f-input" id="fsubj" name="subject" type="text"
+              placeholder="DevOps role / Collaboration / Just saying hi" />
           </div>
           <div class="f-group">
             <label class="f-label" for="fmsg">Message</label>
-            <textarea class="f-textarea" id="fmsg" placeholder="Tell me what you're building..." required></textarea>
+            <textarea class="f-textarea" id="fmsg" name="message" placeholder="Tell me what you're building..."
+              required></textarea>
           </div>
           <div class="f-submit">
             <button type="submit" class="pill pill-solid" id="submitBtn">Send message →</button>
@@ -1638,19 +1640,47 @@
       });
     });
 
-    // Contact form
-    function handleSubmit(e) {
+    // Contact form — Formspree integration
+    const contactForm = document.getElementById('contactForm');
+    contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
-      btn.textContent = 'Sending…'; btn.disabled = true;
-      setTimeout(() => {
-        e.target.reset();
-        btn.textContent = 'Send message →'; btn.disabled = false;
-        const m = document.getElementById('formMsg');
-        m.style.display = 'block';
-        setTimeout(() => m.style.display = 'none', 5000);
-      }, 1100);
-    }
+      const originalText = btn.textContent;
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch('https://formspree.io/f/maqlvbwg', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(contactForm)
+        });
+
+        if (response.ok) {
+          btn.textContent = '✓ Message Sent!';
+          btn.style.background = 'var(--sienna)';
+          contactForm.reset();
+          const m = document.getElementById('formMsg');
+          m.style.display = 'block';
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+            btn.disabled = false;
+            m.style.display = 'none';
+          }, 5000);
+        } else {
+          throw new Error('Server error');
+        }
+      } catch (err) {
+        btn.textContent = '✗ Failed — Try Again';
+        btn.style.background = '#ef4444';
+        btn.disabled = false;
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = '';
+        }, 5000);
+      }
+    });
   </script>
 </body>
 

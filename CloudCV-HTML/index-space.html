@@ -1428,7 +1428,6 @@
         const btn = form.querySelector('button[type="submit"]');
         const originalText = btn.textContent;
 
-        // Loading state
         btn.textContent = 'Sending…';
         btn.style.background = '';
         btn.disabled = true;
@@ -1441,7 +1440,6 @@
           });
 
           if (response.ok) {
-            // Success
             btn.textContent = '✓ Message Sent!';
             btn.style.background = '#22c55e';
             form.reset();
@@ -1454,7 +1452,6 @@
             throw new Error('Server error');
           }
         } catch (err) {
-          // Error state
           btn.textContent = '✗ Failed — Try Again';
           btn.style.background = '#ef4444';
           btn.disabled = false;
