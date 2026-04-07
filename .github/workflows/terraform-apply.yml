@@ -21,17 +21,20 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region: us-east-1
+          aws-region: us-east-1
 
       - name: Clone Terraform Modules Repo
         run: |
           git clone https://github.com/Ronak083/terraform-modules.git
 
       - name: Terraform Init
+        working-directory: Terrafrom
         run: terraform init
 
       - name: Terraform Plan
+        working-directory: Terrafrom
         run: terraform plan
 
       - name: Terraform Apply
+        working-directory: Terrafrom
         run: terraform apply -auto-approve
