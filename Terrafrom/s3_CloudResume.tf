@@ -1,5 +1,5 @@
 module "my_resume_site" {
-  source = "../../terraform-modules/s3-with-cf"
+  source              = "../terraform-modules/s3-with-cf"
   bucket_name         = "my-codecloudresume"
   domain_name         = "ronakgupta.in"
   hosted_zone_name    = "ronakgupta.in"
@@ -19,10 +19,10 @@ resource "aws_s3_object" "index" {
 resource "aws_s3_object" "remaining_html_files" {
   for_each = fileset("../contents", "*.html")
 
-  bucket       = module.my_resume_site.bucket_id
-  key          = each.value
-  source       = "../contents/${each.value}"
-  etag         = filemd5("../contents/${each.value}")
+  bucket = module.my_resume_site.bucket_id
+  key    = each.value
+  source = "../contents/${each.value}"
+  etag   = filemd5("../contents/${each.value}")
 
   content_type = "text/html"
 }
