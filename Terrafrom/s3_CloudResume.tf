@@ -15,8 +15,8 @@ resource "aws_s3_object" "index" {
   content_type = "text/html"
 }
 
+## Upload all HTML resume theme variants to S3
 resource "aws_s3_object" "remaining_html_files" {
-  # This uses fileset() to list all files ending with .html in that folder
   for_each = fileset("${path.module}/../CloudCV-HTML", "*.html")
 
   bucket       = module.my_resume_site.bucket_id

@@ -1837,22 +1837,22 @@
           </div>
         </div>
         <div class="reveal reveal-delay-3">
-          <form class="contact-form" id="contactForm" onsubmit="handleFormSubmit(event)">
+          <form class="contact-form" id="contactForm">
             <div class="form-group">
               <label class="form-label" for="name">Your Name</label>
-              <input class="form-input" id="name" type="text" placeholder="Jane Smith" required />
+              <input class="form-input" id="name" name="name" type="text" placeholder="Jane Smith" required />
             </div>
             <div class="form-group">
               <label class="form-label" for="email">Email Address</label>
-              <input class="form-input" id="email" type="email" placeholder="jane@company.com" required />
+              <input class="form-input" id="email" name="email" type="email" placeholder="jane@company.com" required />
             </div>
             <div class="form-group">
               <label class="form-label" for="subject">Subject</label>
-              <input class="form-input" id="subject" type="text" placeholder="DevOps role / Collaboration" />
+              <input class="form-input" id="subject" name="subject" type="text" placeholder="DevOps role / Collaboration" />
             </div>
             <div class="form-group">
               <label class="form-label" for="message">Message</label>
-              <textarea class="form-textarea" id="message" placeholder="Tell me about the opportunity..."
+              <textarea class="form-textarea" id="message" name="message" placeholder="Tell me about the opportunity..."
                 required></textarea>
             </div>
             <div class="form-submit-row">
@@ -1954,22 +1954,48 @@
     sections.forEach(s => navObserver.observe(s));
 
     /* ============================================
-       CONTACT FORM
+       CONTACT FORM — Formspree integration
     ============================================ */
-    function handleFormSubmit(e) {
+    const contactForm = document.getElementById('contactForm');
+    contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
+      const originalText = btn.textContent;
       btn.textContent = 'Sending...';
       btn.disabled = true;
-      setTimeout(() => {
-        document.getElementById('contactForm').reset();
-        btn.textContent = 'Send Message →';
+
+      try {
+        const response = await fetch('https://formspree.io/f/maqlvbwg', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(contactForm)
+        });
+
+        if (response.ok) {
+          btn.textContent = '✓ Message Sent!';
+          btn.style.background = 'var(--accent2)';
+          contactForm.reset();
+          const fb = document.getElementById('formFeedback');
+          fb.style.display = 'block';
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+            btn.disabled = false;
+            fb.style.display = 'none';
+          }, 4000);
+        } else {
+          throw new Error('Server error');
+        }
+      } catch (err) {
+        btn.textContent = '✗ Failed — Try Again';
+        btn.style.background = 'var(--danger)';
         btn.disabled = false;
-        const fb = document.getElementById('formFeedback');
-        fb.style.display = 'block';
-        setTimeout(() => fb.style.display = 'none', 4000);
-      }, 1200);
-    }
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = '';
+        }, 4000);
+      }
+    });
 
     /* ============================================
        SMOOTH ANCHOR OFFSET FOR FIXED NAVBAR
