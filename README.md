@@ -5,7 +5,7 @@
 This repository contains the code and infrastructure for my Cloud Resume Challenge. It’s not just a website; it’s a full-stack DevOps project that proves I can build the "engine and the tracks" for a modern cloud application.
 
 ## 🌐 Live Project
-**[View my live resume here!](Insert Your Live Link)**
+**[View my live resume here!](https://ronakgupta.in/)**
 
 ---
 
@@ -53,6 +53,6 @@ I tackled this project in stages, treating it like a mission to beat the "Final 
 I’m documenting my journey to help fellow junior developers escape "Tutorial Hell." If you’re working on your own challenge and getting "Access Denied" errors, let's connect!
 
 * **GitHub:** [Ronak083](https://github.com/Ronak083)
-* **Blog:** [Link to your Blog Series]
+* **Blog:** [HashNode](https://ronak083.hashnode.dev/cloud-resume-challenge-project-documentation)
 
 **"Learn by sharing, grow by helping."** 🤝🚀
