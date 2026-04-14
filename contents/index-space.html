@@ -214,7 +214,61 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
+      overflow: visible;
       transition: border-color var(--transition), transform var(--transition)
+    }
+
+    /* Sunray burst disc behind the button */
+    .theme-toggle::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg 25deg,    rgba(108,99,255,0.9) 25deg 35deg,
+        transparent 35deg 85deg,   rgba(108,99,255,0.9) 85deg 95deg,
+        transparent 95deg 145deg,  rgba(108,99,255,0.9) 145deg 155deg,
+        transparent 155deg 205deg, rgba(108,99,255,0.9) 205deg 215deg,
+        transparent 215deg 265deg, rgba(108,99,255,0.9) 265deg 275deg,
+        transparent 275deg 325deg, rgba(108,99,255,0.9) 325deg 335deg,
+        transparent 335deg 360deg
+      );
+      filter: blur(2px);
+      opacity: 0;
+      transform: scale(0.6);
+      animation: toggleRaysBurst 5s ease-in-out infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Dual expanding ripple rings */
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      animation: toggleRipples 5s ease-out infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes toggleRaysBurst {
+      /* 0–15%: rays burst open (~0.75s) */
+      0%   { opacity: 0; transform: scale(0.6); }
+      15%  { opacity: 1; transform: scale(1);   }
+      /* 15–35%: rays close/retract (~1s) */
+      35%  { opacity: 0; transform: scale(0.7); }
+      /* 35–100%: wait silently */
+      100% { opacity: 0; transform: scale(0.6); }
+    }
+
+    @keyframes toggleRipples {
+      /* Pulse fires in first 20% of the 5s cycle (~1s), then waits */
+      0%   { box-shadow: 0 0 0 0px rgba(108,99,255,.8),  0 0 0 0px rgba(108,99,255,.4); }
+      20%  { box-shadow: 0 0 0 12px rgba(108,99,255,0),  0 0 0 22px rgba(108,99,255,0); }
+      100% { box-shadow: 0 0 0 12px rgba(108,99,255,0),  0 0 0 22px rgba(108,99,255,0); }
     }
 
     .theme-toggle:hover {
@@ -630,24 +684,42 @@
     }
 
     /* === Projects === */
+    .projects-scroll-outer {
+      /* tall enough for all 6 cards to scroll through once: 6 * (320+24) = 2064px */
+      height: 2400px;
+      position: relative;
+    }
+
+    .projects-sticky {
+      position: sticky;
+      top: var(--nav-height);
+      overflow: hidden;
+      padding: var(--section-pad) 0;
+      background: var(--bg-secondary);
+    }
+
     .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px
+      display: flex;
+      align-items: stretch;
+      gap: 24px;
+      padding: 0 24px 8px;
+      will-change: transform;
     }
 
     .project-card {
+      width: 320px;
+      flex: 0 0 320px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 28px;
       display: flex;
       flex-direction: column;
-      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition)
+      box-sizing: border-box;
+      transition: box-shadow var(--transition), border-color var(--transition)
     }
 
     .project-card:hover {
-      transform: translateY(-4px);
       box-shadow: var(--shadow-hover);
       border-color: var(--accent)
     }
@@ -930,8 +1002,17 @@
     }
 
     @keyframes livePulse {
-      0%, 100% { opacity: 1; transform: scale(1) }
-      50% { opacity: .4; transform: scale(.75) }
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(.75)
+      }
     }
 
     .visitor-label {
@@ -1034,8 +1115,7 @@
         display: flex
       }
 
-      .skills-grid,
-      .projects-grid {
+      .skills-grid {
         grid-template-columns: 1fr
       }
 
@@ -1066,6 +1146,201 @@
         flex-direction: column;
         gap: 20px
       }
+    }
+
+    /* === Custom Cursor === */
+    @media (pointer: fine) {
+
+      *,
+      *::before,
+      *::after {
+        cursor: none !important;
+      }
+    }
+
+    .cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, background 0.2s, opacity 0.2s;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 34px;
+      height: 34px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%);
+      opacity: 0.55;
+      transition: width 0.25s ease, height 0.25s ease, background 0.25s ease, opacity 0.25s ease, border-color 0.25s ease;
+    }
+
+    body.cursor-hover .cursor-dot {
+      width: 4px;
+      height: 4px;
+      opacity: 0.4;
+    }
+
+    body.cursor-hover .cursor-ring {
+      width: 54px;
+      height: 54px;
+      opacity: 0.85;
+      background: var(--accent-glow);
+      border-color: var(--accent);
+    }
+
+    body.cursor-click .cursor-ring {
+      width: 28px;
+      height: 28px;
+      opacity: 1;
+    }
+
+    /* === Timeline Dot Ripple === */
+    .timeline-dot::after {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      animation: dotRipple 2.4s ease-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes dotRipple {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.7;
+      }
+
+      100% {
+        transform: scale(2.6);
+        opacity: 0;
+      }
+    }
+
+    /* === Section Title Shimmer === */
+    .section-title {
+      background: linear-gradient(90deg,
+          var(--text-primary) 0%,
+          var(--accent) 40%,
+          var(--text-primary) 70%,
+          var(--accent) 100%);
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: titleShimmer 6s linear infinite;
+    }
+
+    .section-title::after {
+      background: var(--accent);
+    }
+
+    @keyframes titleShimmer {
+      0% {
+        background-position: 200% center;
+      }
+
+      100% {
+        background-position: -50% center;
+      }
+    }
+
+    /* === Floating Hero Social === */
+    .hero-social a {
+      animation: floatSocial 3s ease-in-out infinite;
+    }
+
+    .hero-social a:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .hero-social a:nth-child(2) {
+      animation-delay: 0.4s;
+    }
+
+    .hero-social a:nth-child(3) {
+      animation-delay: 0.8s;
+    }
+
+    @keyframes floatSocial {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+
+    /* Hero social hover overrides the float */
+    .hero-social a:hover {
+      animation: none;
+      transform: translateY(-4px);
+    }
+
+    /* === Skill Card 3D Tilt === */
+    .skill-card {
+      transform-style: preserve-3d;
+      transform: perspective(700px);
+    }
+
+    /* === Skill Tag Pop-in === */
+    .skill-tags span {
+      opacity: 0;
+      transform: scale(0.8);
+      animation: tagPop 0.4s ease forwards;
+    }
+
+    .skill-card.visible .skill-tags span:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    .skill-card.visible .skill-tags span:nth-child(2) {
+      animation-delay: 0.10s;
+    }
+
+    .skill-card.visible .skill-tags span:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .skill-card.visible .skill-tags span:nth-child(4) {
+      animation-delay: 0.20s;
+    }
+
+    .skill-card.visible .skill-tags span:nth-child(5) {
+      animation-delay: 0.25s;
+    }
+
+    .skill-card.visible .skill-tags span:nth-child(6) {
+      animation-delay: 0.30s;
+    }
+
+    @keyframes tagPop {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Prevent tags from showing before card is visible */
+    .skill-card:not(.visible) .skill-tags span {
+      animation: none;
+      opacity: 0;
     }
   </style>
 </head>
@@ -1131,7 +1406,7 @@
           </svg>
         </a>
       </div>
-      
+
       <!-- Visitor Counter -->
       <div class="hero-visitor animate-fade-up delay-4" id="visitorCounter">
         <div class="visitor-card">
@@ -1185,7 +1460,7 @@
           </p>
           <div class="about-stats">
             <div class="stat">
-              <span class="stat-number">1.5+</span>
+              <span class="stat-number">2+</span>
               <span class="stat-label">Years Experience</span>
             </div>
             <div class="stat">
@@ -1307,93 +1582,166 @@
   </section>
 
   <!-- ===== Projects ===== -->
-  <section class="section section-alt" id="projects">
-    <div class="container">
-      <h2 class="section-title">Projects</h2>
-      <div class="projects-grid">
-        <!-- Project 1 -->
-        <article class="project-card">
-          <div class="project-header">
-            <svg class="project-icon" viewBox="0 0 24 24">
-              <path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18" />
-            </svg>
-            <div class="project-links">
-              <a href="https://github.com/Ronak083/CodeCloudResume" target="_blank" rel="noopener noreferrer"
-                aria-label="GitHub repo">
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.723-1.333-1.723-1.089-.73.083-.716.083-.716 1.205.082 1.838 1.215 1.838 1.215 1.07 1.802 2.807 1.281 3.492.98.108-.763.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.228-3.164-.123-.298-.532-1.497.117-3.12 0 0 1.001-.314 3.28 1.209A11.5 11.5 0 0112 6.844c1.018.005 2.042.138 3.013.404 2.277-1.523 3.276-1.209 3.276-1.209.65 1.623.241 2.822.118 3.12.765.825 1.226 1.877 1.226 3.164 0 4.53-2.805 5.527-5.475 5.818.43.364.823 1.084.823 2.184 0 1.576-.015 2.846-.015 3.232 0 .316.216.683.825.567C20.565 21.917 24 17.5 24 12.292 24 5.78 18.627.5 12 .5z" />
-                </svg>
-              </a>
+  <div class="projects-scroll-outer" id="projectsOuter">
+    <section class="projects-sticky section-alt" id="projects">
+      <div class="container">
+        <h2 class="section-title">Projects</h2>
+        <div class="projects-grid">
+          <!-- Project 1 -->
+          <article class="project-card">
+            <div class="project-header">
+              <svg class="project-icon" viewBox="0 0 24 24">
+                <path d="M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18" />
+              </svg>
+              <div class="project-links">
+                <a href="https://github.com/Ronak083/CodeCloudResume" target="_blank" rel="noopener noreferrer"
+                  aria-label="GitHub repo">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.723-1.333-1.723-1.089-.73.083-.716.083-.716 1.205.082 1.838 1.215 1.838 1.215 1.07 1.802 2.807 1.281 3.492.98.108-.763.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.228-3.164-.123-.298-.532-1.497.117-3.12 0 0 1.001-.314 3.28 1.209A11.5 11.5 0 0112 6.844c1.018.005 2.042.138 3.013.404 2.277-1.523 3.276-1.209 3.276-1.209.65 1.623.241 2.822.118 3.12.765.825 1.226 1.877 1.226 3.164 0 4.53-2.805 5.527-5.475 5.818.43.364.823 1.084.823 2.184 0 1.576-.015 2.846-.015 3.232 0 .316.216.683.825.567C20.565 21.917 24 17.5 24 12.292 24 5.78 18.627.5 12 .5z" />
+                  </svg>
+                </a>
+              </div>
             </div>
-          </div>
-          <h3 class="project-title">Cloud Resume Challenge</h3>
-          <p class="project-desc">
-            Static resume on AWS S3 with CloudFront CDN &amp; HTTPS. Serverless visitor counter via Lambda + API Gateway
-            + DynamoDB.
-            Fully provisioned with Terraform and deployed through GitHub Actions CI/CD.
-          </p>
-          <div class="project-stack">
-            <span>Terraform</span><span>AWS
-              S3</span><span>CloudFront</span><span>Lambda</span><span>DynamoDB</span><span>GitHub Actions</span>
-          </div>
-        </article>
-        <!-- Project 2 -->
-        <article class="project-card">
-          <div class="project-header">
-            <svg class="project-icon" viewBox="0 0 24 24">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
-            <div class="project-links">
-              <a href="https://github.com/Ronak083" target="_blank" rel="noopener noreferrer" aria-label="GitHub repo">
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.723-1.333-1.723-1.089-.73.083-.716.083-.716 1.205.082 1.838 1.215 1.838 1.215 1.07 1.802 2.807 1.281 3.492.98.108-.763.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.228-3.164-.123-.298-.532-1.497.117-3.12 0 0 1.001-.314 3.28 1.209A11.5 11.5 0 0112 6.844c1.018.005 2.042.138 3.013.404 2.277-1.523 3.276-1.209 3.276-1.209.65 1.623.241 2.822.118 3.12.765.825 1.226 1.877 1.226 3.164 0 4.53-2.805 5.527-5.475 5.818.43.364.823 1.084.823 2.184 0 1.576-.015 2.846-.015 3.232 0 .316.216.683.825.567C20.565 21.917 24 17.5 24 12.292 24 5.78 18.627.5 12 .5z" />
-                </svg>
-              </a>
+            <h3 class="project-title">Cloud Resume Challenge</h3>
+            <p class="project-desc">
+              Static resume on AWS S3 with CloudFront CDN &amp; HTTPS. Serverless visitor counter via Lambda + API
+              Gateway
+              + DynamoDB.
+              Fully provisioned with Terraform and deployed through GitHub Actions CI/CD.
+            </p>
+            <div class="project-stack">
+              <span>Terraform</span><span>AWS
+                S3</span><span>CloudFront</span><span>Lambda</span><span>DynamoDB</span><span>GitHub Actions</span>
             </div>
-          </div>
-          <h3 class="project-title">InfraOps — EKS Platform</h3>
-          <p class="project-desc">
-            Deployed a containerised app on AWS EKS with Helm. Built CI/CD with GitHub Actions for Docker builds, ECR
-            pushes,
-            and auto-deploy on merge — reducing manual steps by 90%. Integrated Prometheus + Grafana &amp; NGINX
-            Ingress.
-          </p>
-          <div class="project-stack">
-            <span>AWS EKS</span><span>Helm</span><span>GitHub
-              Actions</span><span>ECR</span><span>Prometheus</span><span>Grafana</span>
-          </div>
-        </article>
-        <!-- Project 3 -->
-        <article class="project-card">
-          <div class="project-header">
-            <svg class="project-icon" viewBox="0 0 24 24">
-              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-            </svg>
-            <div class="project-links">
-              <a href="https://github.com/Ronak083/Quorumify" target="_blank" rel="noopener noreferrer"
-                aria-label="GitHub repo">
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.723-1.333-1.723-1.089-.73.083-.716.083-.716 1.205.082 1.838 1.215 1.838 1.215 1.07 1.802 2.807 1.281 3.492.98.108-.763.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.228-3.164-.123-.298-.532-1.497.117-3.12 0 0 1.001-.314 3.28 1.209A11.5 11.5 0 0112 6.844c1.018.005 2.042.138 3.013.404 2.277-1.523 3.276-1.209 3.276-1.209.65 1.623.241 2.822.118 3.12.765.825 1.226 1.877 1.226 3.164 0 4.53-2.805 5.527-5.475 5.818.43.364.823 1.084.823 2.184 0 1.576-.015 2.846-.015 3.232 0 .316.216.683.825.567C20.565 21.917 24 17.5 24 12.292 24 5.78 18.627.5 12 .5z" />
-                </svg>
-              </a>
+          </article>
+          <!-- Project 2 -->
+          <article class="project-card">
+            <div class="project-header">
+              <svg class="project-icon" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+              <div class="project-links">
+                <a href="https://github.com/Ronak083" target="_blank" rel="noopener noreferrer"
+                  aria-label="GitHub repo">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.723-1.333-1.723-1.089-.73.083-.716.083-.716 1.205.082 1.838 1.215 1.838 1.215 1.07 1.802 2.807 1.281 3.492.98.108-.763.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.228-3.164-.123-.298-.532-1.497.117-3.12 0 0 1.001-.314 3.28 1.209A11.5 11.5 0 0112 6.844c1.018.005 2.042.138 3.013.404 2.277-1.523 3.276-1.209 3.276-1.209.65 1.623.241 2.822.118 3.12.765.825 1.226 1.877 1.226 3.164 0 4.53-2.805 5.527-5.475 5.818.43.364.823 1.084.823 2.184 0 1.576-.015 2.846-.015 3.232 0 .316.216.683.825.567C20.565 21.917 24 17.5 24 12.292 24 5.78 18.627.5 12 .5z" />
+                  </svg>
+                </a>
+              </div>
             </div>
-          </div>
-          <h3 class="project-title">Quorumify</h3>
-          <p class="project-desc">
-            Full-stack Q&A platform (Quora-inspired) with role-based access (Admin, Mod, User, Guest).
-            REST APIs in Spring Boot + ReactJS frontend. Containerised with Docker for consistent dev/prod parity.
-          </p>
-          <div class="project-stack">
-            <span>Java</span><span>Spring
-              Boot</span><span>ReactJS</span><span>MySQL</span><span>Docker</span><span>JWT</span>
-          </div>
-        </article>
+            <h3 class="project-title">InfraOps — EKS Platform</h3>
+            <p class="project-desc">
+              Deployed a containerised app on AWS EKS with Helm. Built CI/CD with GitHub Actions for Docker builds, ECR
+              pushes,
+              and auto-deploy on merge — reducing manual steps by 90%. Integrated Prometheus + Grafana &amp; NGINX
+              Ingress.
+            </p>
+            <div class="project-stack">
+              <span>AWS EKS</span><span>Helm</span><span>GitHub
+                Actions</span><span>ECR</span><span>Prometheus</span><span>Grafana</span>
+            </div>
+          </article>
+          <!-- Project 3 -->
+          <article class="project-card">
+            <div class="project-header">
+              <svg class="project-icon" viewBox="0 0 24 24">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+              </svg>
+              <div class="project-links">
+                <a href="https://github.com/Ronak083/Quorumify" target="_blank" rel="noopener noreferrer"
+                  aria-label="GitHub repo">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.723-1.333-1.723-1.089-.73.083-.716.083-.716 1.205.082 1.838 1.215 1.838 1.215 1.07 1.802 2.807 1.281 3.492.98.108-.763.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.228-3.164-.123-.298-.532-1.497.117-3.12 0 0 1.001-.314 3.28 1.209A11.5 11.5 0 0112 6.844c1.018.005 2.042.138 3.013.404 2.277-1.523 3.276-1.209 3.276-1.209.65 1.623.241 2.822.118 3.12.765.825 1.226 1.877 1.226 3.164 0 4.53-2.805 5.527-5.475 5.818.43.364.823 1.084.823 2.184 0 1.576-.015 2.846-.015 3.232 0 .316.216.683.825.567C20.565 21.917 24 17.5 24 12.292 24 5.78 18.627.5 12 .5z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <h3 class="project-title">Quorumify</h3>
+            <p class="project-desc">
+              Full-stack Q&A platform (Quora-inspired) with role-based access (Admin, Mod, User, Guest).
+              REST APIs in Spring Boot + ReactJS frontend. Containerised with Docker for consistent dev/prod parity.
+            </p>
+            <div class="project-stack">
+              <span>Java</span><span>Spring
+                Boot</span><span>ReactJS</span><span>MySQL</span><span>Docker</span><span>JWT</span>
+            </div>
+          </article>
+          <!-- Project 4 -->
+          <article class="project-card">
+            <div class="project-header">
+              <svg class="project-icon" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+              <div class="project-links">
+                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="GitHub repo">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.723-1.333-1.723-1.089-.73.083-.716.083-.716 1.205.082 1.838 1.215 1.838 1.215 1.07 1.802 2.807 1.281 3.492.98.108-.763.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.228-3.164-.123-.298-.532-1.497.117-3.12 0 0 1.001-.314 3.28 1.209A11.5 11.5 0 0112 6.844c1.018.005 2.042.138 3.013.404 2.277-1.523 3.276-1.209 3.276-1.209.65 1.623.241 2.822.118 3.12.765.825 1.226 1.877 1.226 3.164 0 4.53-2.805 5.527-5.475 5.818.43.364.823 1.084.823 2.184 0 1.576-.015 2.846-.015 3.232 0 .316.216.683.825.567C20.565 21.917 24 17.5 24 12.292 24 5.78 18.627.5 12 .5z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <h3 class="project-title">XYZ Project 1</h3>
+            <p class="project-desc">
+              Default context for XYZ Project 1. This is a placeholder description that you can update later.
+            </p>
+            <div class="project-stack">
+              <span>Tech 1</span><span>Tech 2</span><span>Tech 3</span>
+            </div>
+          </article>
+          <!-- Project 5 -->
+          <article class="project-card">
+            <div class="project-header">
+              <svg class="project-icon" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+              <div class="project-links">
+                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="GitHub repo">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.723-1.333-1.723-1.089-.73.083-.716.083-.716 1.205.082 1.838 1.215 1.838 1.215 1.07 1.802 2.807 1.281 3.492.98.108-.763.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.228-3.164-.123-.298-.532-1.497.117-3.12 0 0 1.001-.314 3.28 1.209A11.5 11.5 0 0112 6.844c1.018.005 2.042.138 3.013.404 2.277-1.523 3.276-1.209 3.276-1.209.65 1.623.241 2.822.118 3.12.765.825 1.226 1.877 1.226 3.164 0 4.53-2.805 5.527-5.475 5.818.43.364.823 1.084.823 2.184 0 1.576-.015 2.846-.015 3.232 0 .316.216.683.825.567C20.565 21.917 24 17.5 24 12.292 24 5.78 18.627.5 12 .5z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <h3 class="project-title">XYZ Project 2</h3>
+            <p class="project-desc">
+              Default context for XYZ Project 2. This is a placeholder description that you can update later.
+            </p>
+            <div class="project-stack">
+              <span>Tech 1</span><span>Tech 2</span><span>Tech 3</span>
+            </div>
+          </article>
+          <!-- Project 6 -->
+          <article class="project-card">
+            <div class="project-header">
+              <svg class="project-icon" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              </svg>
+              <div class="project-links">
+                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="GitHub repo">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M12 .5C5.37.5 0 5.78 0 12.292c0 5.211 3.438 9.63 8.205 11.188.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.723-1.333-1.723-1.089-.73.083-.716.083-.716 1.205.082 1.838 1.215 1.838 1.215 1.07 1.802 2.807 1.281 3.492.98.108-.763.417-1.282.76-1.577-2.665-.295-5.466-1.309-5.466-5.827 0-1.287.465-2.339 1.228-3.164-.123-.298-.532-1.497.117-3.12 0 0 1.001-.314 3.28 1.209A11.5 11.5 0 0112 6.844c1.018.005 2.042.138 3.013.404 2.277-1.523 3.276-1.209 3.276-1.209.65 1.623.241 2.822.118 3.12.765.825 1.226 1.877 1.226 3.164 0 4.53-2.805 5.527-5.475 5.818.43.364.823 1.084.823 2.184 0 1.576-.015 2.846-.015 3.232 0 .316.216.683.825.567C20.565 21.917 24 17.5 24 12.292 24 5.78 18.627.5 12 .5z" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <h3 class="project-title">XYZ Project 3</h3>
+            <p class="project-desc">
+              Default context for XYZ Project 3. This is a placeholder description that you can update later.
+            </p>
+            <div class="project-stack">
+              <span>Tech 1</span><span>Tech 2</span><span>Tech 3</span>
+            </div>
+          </article>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div><!-- /projectsOuter -->
 
   <!-- ===== Currently Learning ===== -->
   <section class="section" id="learning">
@@ -1512,7 +1860,7 @@
 
       /* ---- Scroll Reveal ---- */
       const revealEls = document.querySelectorAll(
-        '.skill-card,.project-card,.timeline-item,.learning-card,.contact-link,.contact-form,.about-text,.about-stats .stat'
+        '.skill-card,.timeline-item,.learning-card,.contact-link,.contact-form,.about-text,.about-stats .stat'
       );
       revealEls.forEach(el => el.classList.add('reveal'));
       const observer = new IntersectionObserver((entries) => {
@@ -1521,6 +1869,36 @@
         });
       }, { threshold: 0.15 });
       revealEls.forEach(el => observer.observe(el));
+
+      /* ---- Horizontal Scroll-Jacked Projects (infinite loop) ---- */
+      const projectsOuter = document.getElementById('projectsOuter');
+      const projectsGrid = document.querySelector('.projects-grid');
+      if (projectsOuter && projectsGrid) {
+        // Clone all original cards so the loop is seamless
+        const origCards = Array.from(projectsGrid.children);
+        origCards.forEach(card => {
+          const clone = card.cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          projectsGrid.appendChild(clone);
+        });
+
+        const CARD_W = 320;
+        const GAP = 24;
+        const stride = CARD_W + GAP;                  // px per card
+        const loopWidth = origCards.length * stride;  // width of one full set
+
+        function updateProjectsScroll() {
+          const outerTop = projectsOuter.getBoundingClientRect().top + window.scrollY;
+          const scrolled = window.scrollY - outerTop;   // how far into the outer
+          if (scrolled < 0) { projectsGrid.style.transform = 'translateX(0px)'; return; }
+          // Infinite loop via modulo
+          const x = -(scrolled % loopWidth);
+          projectsGrid.style.transform = `translateX(${x}px)`;
+        }
+
+        window.addEventListener('scroll', updateProjectsScroll, { passive: true });
+        updateProjectsScroll();
+      }
 
       /* ---- Active Nav Link Highlight ---- */
       const sections = document.querySelectorAll('section[id]');
@@ -1631,6 +2009,116 @@
             visitorCountEl.classList.remove('loading');
           });
       }
+
+      /* ---- Custom Cursor ---- */
+      if (window.matchMedia('(pointer: fine)').matches) {
+        const dot = Object.assign(document.createElement('div'), { className: 'cursor-dot' });
+        const ring = Object.assign(document.createElement('div'), { className: 'cursor-ring' });
+        document.body.appendChild(dot);
+        document.body.appendChild(ring);
+
+        let rx = 0, ry = 0, mx = 0, my = 0;
+        document.addEventListener('mousemove', e => {
+          mx = e.clientX; my = e.clientY;
+          dot.style.left = mx + 'px';
+          dot.style.top = my + 'px';
+        });
+
+        (function animateRing() {
+          rx += (mx - rx) * 0.13;
+          ry += (my - ry) * 0.13;
+          ring.style.left = rx + 'px';
+          ring.style.top = ry + 'px';
+          requestAnimationFrame(animateRing);
+        })();
+
+        const hoverTargets = 'a, button, .project-card, .skill-card, .learning-card, .contact-link, .visitor-card';
+        document.querySelectorAll(hoverTargets).forEach(el => {
+          el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+          el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        document.addEventListener('mousedown', () => document.body.classList.add('cursor-click'));
+        document.addEventListener('mouseup', () => document.body.classList.remove('cursor-click'));
+      }
+
+      /* ---- Typewriter on Hero Subtitle ---- */
+      const heroTitleEl = document.querySelector('.hero-title');
+      if (heroTitleEl) {
+        const fullText = heroTitleEl.textContent.trim();
+        heroTitleEl.textContent = '';
+        let ti = 0;
+        function typeChar() {
+          if (ti < fullText.length) {
+            heroTitleEl.textContent += fullText[ti++];
+            setTimeout(typeChar, 45);
+          }
+        }
+        setTimeout(typeChar, 900); // wait for fade-in animation
+      }
+
+      /* ---- Count-up for Stats ---- */
+      function parseStatTarget(text) {
+        const num = parseFloat(text.replace(/[^0-9.]/g, ''));
+        const suffix = text.replace(/[0-9.]/g, '').trim();
+        return { num, suffix };
+      }
+
+      const statEls = document.querySelectorAll('.stat-number');
+      const statObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          const { num, suffix } = parseStatTarget(el.textContent);
+          let start = null;
+          const dur = 1800;
+          (function countUp(ts) {
+            if (!start) start = ts;
+            const p = Math.min((ts - start) / dur, 1);
+            const ease = 1 - Math.pow(1 - p, 3);
+            const val = num % 1 === 0
+              ? Math.floor(ease * num)
+              : (ease * num).toFixed(1);
+            el.textContent = val + suffix;
+            if (p < 1) requestAnimationFrame(countUp);
+          })(performance.now());
+          statObserver.unobserve(el);
+        });
+      }, { threshold: 0.5 });
+      statEls.forEach(el => statObserver.observe(el));
+
+      /* ---- 3D Tilt on Skill Cards ---- */
+      document.querySelectorAll('.skill-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const r = card.getBoundingClientRect();
+          const x = e.clientX - r.left, y = e.clientY - r.top;
+          const rx = -(y - r.height / 2) / r.height * 22;
+          const ry = (x - r.width / 2) / r.width * 22;
+          card.style.transition = 'transform 0.08s ease';
+          card.style.transform = `perspective(480px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(18px) scale(1.03)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transition = 'transform 0.45s ease';
+          card.style.transform = '';
+        });
+      });
+
+      /* ---- 3D Tilt on Learning Cards ---- */
+      document.querySelectorAll('.learning-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const r = card.getBoundingClientRect();
+          const x = e.clientX - r.left, y = e.clientY - r.top;
+          const rx = -(y - r.height / 2) / r.height * 22;
+          const ry = (x - r.width / 2) / r.width * 22;
+          card.style.transition = 'transform 0.08s ease';
+          card.style.transform = `perspective(480px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(18px) scale(1.03)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transition = 'transform 0.45s ease';
+          card.style.transform = '';
+        });
+      });
+
     });
   </script>
 </body>
