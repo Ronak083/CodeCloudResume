@@ -385,10 +385,190 @@
       z-index: 1;
       min-height: 100svh;
       display: grid;
-      align-content: end;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr auto;
+      gap: 0 60px;
       padding: 120px clamp(24px, 5vw, 64px) 80px;
       max-width: 1160px;
       margin: 0 auto;
+    }
+
+    .hero-left {
+      display: contents;
+      /* children flow into grid as normal */
+    }
+
+    .hero-right {
+      grid-column: 2;
+      grid-row: 1 / 4;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      opacity: 0;
+      animation: fadeUp .7s var(--ease) 2.1s forwards;
+    }
+
+    /* ─── TERMINAL ───────────────────────────────────── */
+    .term-card {
+      width: 100%;
+      max-width: 480px;
+      background: #1a1714;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow:
+        0 2px 0 rgba(255, 255, 255, .05) inset,
+        0 24px 80px rgba(28, 26, 23, .35),
+        0 4px 16px rgba(28, 26, 23, .2);
+      border: 1px solid rgba(255, 255, 255, .07);
+      font-family: var(--ff-mono);
+    }
+
+    [data-theme="dark"] .term-card {
+      background: #0e0d0b;
+      box-shadow:
+        0 2px 0 rgba(255, 255, 255, .04) inset,
+        0 24px 80px rgba(0, 0, 0, .5);
+      border-color: rgba(255, 255, 255, .06);
+    }
+
+    .term-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, .04);
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    .term-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .term-dot.r {
+      background: #ff5f57;
+    }
+
+    .term-dot.y {
+      background: #febc2e;
+    }
+
+    .term-dot.g {
+      background: #28c840;
+    }
+
+    .term-title {
+      flex: 1;
+      text-align: center;
+      font-size: .58rem;
+      letter-spacing: .08em;
+      color: rgba(255, 255, 255, .3);
+    }
+
+    .term-body {
+      padding: 20px 22px 24px;
+      font-size: .72rem;
+      line-height: 1.9;
+      color: rgba(255, 255, 255, .7);
+      min-height: 260px;
+      max-height: 300px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .term-line {
+      display: flex;
+      gap: 0;
+      white-space: pre;
+      flex-wrap: wrap;
+    }
+
+    .term-prompt {
+      color: var(--sienna);
+      flex-shrink: 0;
+    }
+
+    .term-cmd {
+      color: #e8dcc8;
+    }
+
+    .term-out {
+      color: rgba(255, 255, 255, .38);
+      font-size: .68rem;
+      padding-left: 22px;
+    }
+
+    .term-out.ok {
+      color: #4ade80;
+    }
+
+    .term-out.dim {
+      color: rgba(255, 255, 255, .28);
+    }
+
+    .term-cursor {
+      display: inline-block;
+      width: 7px;
+      height: .85em;
+      background: var(--sienna);
+      vertical-align: middle;
+      margin-left: 2px;
+      border-radius: 1px;
+      animation: blink .9s step-end infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    /* stacked badge below terminal */
+    .term-badge-row {
+      display: flex;
+      gap: 8px;
+      padding: 14px 22px;
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      flex-wrap: wrap;
+    }
+
+    .term-badge {
+      font-size: .55rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .07);
+      color: rgba(255, 255, 255, .45);
+    }
+
+    /* ─── HERO RESPONSIVE ───────────────────────────── */
+    @media (max-width: 860px) {
+      #hero {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+
+      .hero-right {
+        grid-column: 1;
+        grid-row: auto;
+        justify-content: flex-start;
+        margin-top: 48px;
+      }
+
+      .term-card {
+        max-width: 100%;
+      }
     }
 
     .hero-eyebrow {
@@ -469,6 +649,7 @@
       align-items: flex-end;
       flex-wrap: wrap;
       gap: 24px;
+      align-self: end;
       opacity: 0;
       animation: fadeUp .6s var(--ease) 1.8s forwards;
     }
@@ -527,6 +708,7 @@
       padding-top: 40px;
       margin-top: 40px;
       border-top: 1px solid var(--rule);
+      align-self: end;
       opacity: 0;
       animation: fadeUp .6s var(--ease) 1.9s forwards;
     }
@@ -558,8 +740,17 @@
     }
 
     @keyframes vcPulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: .4; transform: scale(.75); }
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(.75);
+      }
     }
 
     .vc-num {
@@ -1437,6 +1628,7 @@
 
   <!-- HERO -->
   <section id="hero">
+    <!-- LEFT COLUMN -->
     <div class="hero-eyebrow">
       <span class="terminal-badge"><span class="dot"></span>Available for roles</span>
       DevOps &amp; Infrastructure Engineer — Bengaluru, India
@@ -1446,7 +1638,7 @@
       <p class="hero-desc">
         Building the pipelines and platforms that let engineering teams
         move fast without breaking things.
-        <strong>AWS · Kubernetes · Terraform</strong> — 1.5+ years in production.
+        <strong>AWS · Kubernetes · Terraform</strong> — 2 years in production.
       </p>
       <div class="hero-links">
         <a href="#projects" class="pill pill-solid">View work</a>
@@ -1470,6 +1662,26 @@
       <div class="stat-item">
         <span class="stat-n">IaC</span>
         <span class="stat-l">Terraform + Ansible</span>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN — Terminal -->
+    <div class="hero-right">
+      <div class="term-card">
+        <div class="term-bar">
+          <span class="term-dot r"></span>
+          <span class="term-dot y"></span>
+          <span class="term-dot g"></span>
+          <span class="term-title">ronak@devops — prod-cluster</span>
+        </div>
+        <div class="term-body" id="termBody"></div>
+        <div class="term-badge-row">
+          <span class="term-badge">AWS</span>
+          <span class="term-badge">Kubernetes</span>
+          <span class="term-badge">Terraform</span>
+          <span class="term-badge">Jenkins</span>
+          <span class="term-badge">Ansible</span>
+        </div>
       </div>
     </div>
   </section>
@@ -1541,10 +1753,20 @@
                 </div>
               </div>
               <div class="litem">
-                <div class="litem-icon">🔐</div>
+                <div class="litem-icon">✉️</div>
                 <div>
-                  <div class="litem-title">HashiCorp Vault — secrets management</div>
-                  <div class="litem-desc">Dynamic secrets in K8s workloads, PKI backends, zero-trust service auth.</div>
+                  <div class="litem-title">Tech Blogging</div>
+                  <div class="litem-desc">Writing interactive guides on Kubernetes, Linux, and AWS. First article:
+                    <em>"How to Start Your Kubernetes Journey Without Panic Attacks."</em>
+                  </div>
+                </div>
+              </div>
+              <div class="litem">
+                <div class="litem-icon">💻</div>
+                <div>
+                  <div class="litem-title">100 Days of Code</div>
+                  <div class="litem-desc">Sharing daily learning progress publicly on Twitter under #100DaysOfCode —
+                    consistency over perfection.</div>
                 </div>
               </div>
             </div>
@@ -1958,6 +2180,111 @@
         requestAnimationFrame(draw);
       }
       draw();
+    })();
+
+    /* ── Terminal Typewriter ── */
+    (function () {
+      const body = document.getElementById('termBody');
+      if (!body) return;
+
+      const steps = [
+        { type: 'cmd', text: 'terraform plan -out=prod.tfplan' },
+        { type: 'out', text: 'Plan: 12 to add, 3 to change, 0 to destroy.', cls: 'ok' },
+        { type: 'cmd', text: 'terraform apply prod.tfplan' },
+        { type: 'out', text: 'Apply complete! Resources: 12 added.', cls: 'ok' },
+        { type: 'cmd', text: 'kubectl get pods -n production' },
+        { type: 'out', text: 'api-deploy-7d9f   1/1   Running   0   2m', cls: 'dim' },
+        { type: 'out', text: 'worker-6bc8c      1/1   Running   0   2m', cls: 'dim' },
+        { type: 'cmd', text: 'ansible-playbook site.yml -i prod' },
+        { type: 'out', text: 'PLAY RECAP — ok=18  changed=4  failed=0', cls: 'ok' },
+        { type: 'cmd', text: 'docker build -t api:v2.1.0 .' },
+        { type: 'out', text: 'Successfully built a3f9c12e8d41', cls: 'ok' },
+      ];
+
+      const CHAR_DELAY = 38;  // ms per char
+      const STEP_PAUSE = 650; // ms between steps
+      const LOOP_PAUSE = 2800; // ms before restart
+
+      let stepIdx = 0;
+
+      function appendLine(cls_extra) {
+        const el = document.createElement('div');
+        el.className = 'term-line';
+        if (cls_extra) cls_extra.split(' ').filter(Boolean).forEach(c => el.classList.add(c));
+        body.appendChild(el);
+        return el;
+      }
+
+      function scrollBottom() {
+        body.scrollTop = body.scrollHeight;
+      }
+
+      // Cursor element (reused, moved to current line)
+      const cursor = document.createElement('span');
+      cursor.className = 'term-cursor';
+
+      function typeCmd(step, done) {
+        const row = appendLine();
+        const prompt = document.createElement('span');
+        prompt.className = 'term-prompt';
+        prompt.textContent = '❯ ';
+        const cmd = document.createElement('span');
+        cmd.className = 'term-cmd';
+        row.appendChild(prompt);
+        row.appendChild(cmd);
+        row.appendChild(cursor);
+        scrollBottom();
+
+        let i = 0;
+        const chars = step.text.split('');
+        function tick() {
+          if (i < chars.length) {
+            cmd.textContent += chars[i++];
+            scrollBottom();
+            setTimeout(tick, CHAR_DELAY);
+          } else {
+            row.removeChild(cursor);
+            done();
+          }
+        }
+        setTimeout(tick, CHAR_DELAY);
+      }
+
+      function showOut(step, done) {
+        const row = appendLine('term-out ' + (step.cls || ''));
+        row.textContent = step.text;
+        scrollBottom();
+        setTimeout(done, STEP_PAUSE);
+      }
+
+      function runStep() {
+        if (stepIdx >= steps.length) {
+          // show idle cursor then restart
+          const row = appendLine();
+          const prompt = document.createElement('span');
+          prompt.className = 'term-prompt';
+          prompt.textContent = '❯ ';
+          row.appendChild(prompt);
+          row.appendChild(cursor);
+          scrollBottom();
+          setTimeout(() => {
+            row.removeChild(cursor);
+            body.innerHTML = '';
+            stepIdx = 0;
+            setTimeout(runStep, 300);
+          }, LOOP_PAUSE);
+          return;
+        }
+        const step = steps[stepIdx++];
+        if (step.type === 'cmd') {
+          typeCmd(step, () => setTimeout(runStep, STEP_PAUSE));
+        } else {
+          showOut(step, runStep);
+        }
+      }
+
+      // Start after hero animation completes
+      setTimeout(runStep, 2300);
     })();
 
     /* ── Visitor / View Counter ── */
