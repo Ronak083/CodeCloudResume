@@ -9,8 +9,8 @@ module "my_resume_site" {
 resource "aws_s3_object" "index" {
   bucket = module.my_resume_site.bucket_id
   key    = "index.html"
-  source = "../contents/index-space.html"
-  etag   = filemd5("../contents/index-space.html")
+  source = "../contents/index-coffee.html"
+  etag   = filemd5("../contents/index-coffee.html")
 
   content_type = "text/html"
 }
