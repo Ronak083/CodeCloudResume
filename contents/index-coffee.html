@@ -379,6 +379,43 @@
       opacity: .18;
     }
 
+    /* ─── DECORATIVE CIRCLES ────────────────────────── */
+    .diag-accent {
+      position: fixed;
+      top: -100px;
+      right: -100px;
+      width: 500px;
+      height: 500px;
+      border: 1px solid var(--sienna-t);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      animation: spin 40s linear infinite;
+    }
+
+    .diag-accent::before {
+      content: '';
+      position: absolute;
+      inset: 40px;
+      border: 1px solid var(--sienna-t);
+      border-radius: 50%;
+    }
+
+    .diag-accent::after {
+      content: '';
+      position: absolute;
+      inset: 80px;
+      border: 1px solid var(--sienna-t);
+      border-radius: 50%;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+
     /* ─── HERO ───────────────────────────────────────── */
     #hero {
       position: relative;
@@ -1002,6 +1039,16 @@
     }
 
     /* ─── SKILLS ─────────────────────────────────────── */
+    #skills,
+    #experience,
+    #projects,
+    #contact {
+      position: relative;
+      z-index: 2;
+      background: var(--cream);
+      transition: background .35s;
+    }
+
     #skills {
       padding: 100px 0;
     }
@@ -1480,7 +1527,9 @@
       gap: 12px;
       border-top: 1px solid var(--rule);
       position: relative;
-      z-index: 1;
+      z-index: 2;
+      background: var(--cream);
+      transition: background .35s;
     }
 
     .footer-name {
@@ -1589,6 +1638,9 @@
 
   <!-- PARTICLE CANVAS -->
   <canvas id="particle-canvas"></canvas>
+
+  <!-- DECORATIVE CIRCLES -->
+  <div class="diag-accent"></div>
 
   <!-- LOADER -->
   <div id="loader">
